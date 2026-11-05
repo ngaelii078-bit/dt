@@ -12,4 +12,4 @@ The demo assistant uses fixed website information and a guided enquiry flow. It 
 
 The WhatsApp button currently opens a coming-soon notice. To connect it, find `const widgetConfig = { whatsappNumber: '' };` inside `index.html` and add the international business number, including its country code. The button will then open a WhatsApp chat when clicked.
 
-Bathroom photographs are illustrative Unsplash imagery. Manrope and DM Sans font licenses are included inside the HTML file.
+Bathroom photographs are illustrative Unsplash imagery. Manrope and DM Sans font licenses and the Bootstrap Icons MIT license for the WhatsApp glyph are included inside the HTML file.
