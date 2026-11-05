@@ -1,0 +1,19 @@
+# Local source and private hosting checkout
+/dt-plumbing/
+
+# Generated convenience file; index.html is the published copy
+/DT-Plumbing.html
+
+# Temporary reference downloads and deployment archives
+/style-reference.html
+/style-reference.css
+/*.tar.gz
+
+# Local tooling and credentials
+.agents/
+.codex/
+.aws/
+node_modules/
+.env
+.env.*
+*.log
