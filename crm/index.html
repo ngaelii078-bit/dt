@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en-ZA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>DT Plumbing CRM</title>
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:#ECECEA}img{max-width:100%}[hidden]{display:none!important}</style>
+<!-- Stand-in for claude.ai's saving and downloads, so the CRM runs on any static host (Vercel). -->
+<script src="local/shim.js"></script>
+</head>
+<body>
+<script>
+// Loads dt-plumbing-crm.html (the same file published to claude.ai) into this page,
+// so there is one copy of the CRM to maintain. Scripts are re-created in order so they run.
+(async () => {
+  try {
+    const res = await fetch('dt-plumbing-crm.html', {cache: 'no-cache'});
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const doc = new DOMParser().parseFromString(await res.text(), 'text/html');
+    for (const n of [...doc.head.childNodes, ...doc.body.childNodes]) {
+      if (n.nodeName === 'TITLE') { document.title = n.textContent; continue; }
+      if (n.nodeName === 'SCRIPT') {
+        const s = document.createElement('script');
+        if (n.getAttribute('src')) {
+          s.src = n.getAttribute('src');
+          await new Promise(done => { s.onload = done; s.onerror = done; document.body.appendChild(s); });
+        } else {
+          s.textContent = n.textContent;
+          document.body.appendChild(s);
+        }
+        continue;
+      }
+      document.body.appendChild(document.importNode(n, true));
+    }
+  } catch (e) {
+    document.body.innerHTML = '<p style="max-width:520px;margin:60px auto;padding:0 16px;font:16px system-ui;color:#262626">The CRM didn’t load. Check your connection and reload the page.</p>';
+  }
+})();
+</script>
+</body>
+</html>

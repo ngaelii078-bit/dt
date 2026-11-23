@@ -6,6 +6,8 @@
 (() => {
   'use strict';
   const KEY = 'dtcrm-local-db-v1';
+  // seed.json sits next to this file, wherever it is served from (/local/ locally, /crm/local/ on Vercel).
+  const SEED_URL = new URL('seed.json', (document.currentScript && document.currentScript.src) || location.href).href;
   let data = null;
   const listeners = new Set();
 
@@ -18,7 +20,7 @@
     const reset = params.has('reset');
     data = reset ? null : load();
     if (!data) {
-      const seed = await (await fetch('/local/seed.json', {cache: 'no-store'})).json();
+      const seed = await (await fetch(SEED_URL, {cache: 'no-store'})).json();
       data = {};
       for (const [path, value] of Object.entries(seed)) {
         const [c, id] = path.split('/');
@@ -99,9 +101,11 @@
   const caps = {db, downloads, user};
   window.claude = {use: name => Promise.resolve(caps[name] || null)};
 
-  document.addEventListener('DOMContentLoaded', () => {
+  // Add the "local preview" note once the CRM's layout exists (it may be injected after load).
+  function addBanner() {
     const wrap = document.querySelector('main .wrap');
-    if (!wrap) return;
+    if (!wrap || wrap.dataset.localNote) return !!wrap;
+    wrap.dataset.localNote = '1';
     const hide = document.createElement('style');
     hide.textContent = '#banner{display:none!important}';
     document.head.appendChild(hide);
@@ -111,5 +115,10 @@
       'Emailing quotes and invoices works when the CRM is opened in claude.ai; here you can use WhatsApp and Download PDF. ' +
       'To start again with the sample data, add <b>?reset</b> to the address.</p>';
     wrap.prepend(w);
-  });
+    return true;
+  }
+  if (!addBanner()) {
+    const mo = new MutationObserver(() => { if (addBanner()) mo.disconnect(); });
+    mo.observe(document.documentElement, {childList: true, subtree: true});
+  }
 })();
